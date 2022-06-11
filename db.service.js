@@ -14,7 +14,12 @@ class DbService {
     return result.insertedId;
   }
   
-  async find(page, sort = {}) {
+  async find(page, sort = {}, limit = 10) {
+    const countDocuments = await this.adverticements.countDocuments();
+    if (page > Math.floor(countDocuments / limit) || page < 0) {
+      throw new RangeError("Page is out of range!");
+    }
+
     const options = {
       sort,
       projection: {
@@ -23,15 +28,16 @@ class DbService {
         price: 1,
         mainPhoto: 1,
       },
-      limit: 10,
+      limit,
       skip: 10 * page,
     };
+
     const result = await this.adverticements.find({}, options).toArray();
     return {
       pagination: {
         page,
         limit: 10,
-        count: await this.adverticements.countDocuments(),
+        count: countDocuments,
       },
       adverticements: result,
     };
@@ -53,6 +59,10 @@ class DbService {
     delete result.photos;
     
     return result;
+  }
+
+  async close() {
+    await client.close();
   }
 }
 
