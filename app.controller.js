@@ -7,13 +7,8 @@ app.use(express.json());
 app.get("/adverticements", async (req, res) => {
   const page = req.body?.page || 0;
   const sort = req.body?.sort;
-  const key = `${page}${sort}`;
   try {
-    let result = JSON.parse(await app.redis.get(key));
-    if (!result) {
-      result = await app.dbService.find(page, sort);
-      app.redis.set(key, JSON.stringify(result));
-    }
+    result = await app.dbService.find(page, sort);
     res.send(result);
   }
   catch (e) {
