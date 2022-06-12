@@ -14,7 +14,8 @@ class DbService {
     return result.insertedId;
   }
   
-  async find(page, sort = {}, limit = 10) {
+  async find(page, sort = {}) {
+    const limit = 10;
     const countDocuments = await this.adverticements.countDocuments();
     if (page > Math.floor(countDocuments / limit) || page < 0) {
       throw new RangeError("Page is out of range!");
@@ -47,10 +48,13 @@ class DbService {
     const options = {
       projection: {
         _id: 0,
+        date: 0,
       },
     };
   
     const result = await this.adverticements.findOne({ _id: ObjectId(id) }, options);
+
+    if (!result) throw new Error(`Id ${id} not found!`)
     
     if (!fields.includes("description"))
     delete result.description;

@@ -17,7 +17,6 @@ app.get("/adverticements", async (req, res) => {
 });
 
 app.get("/adverticements/:id", async (req, res) => {
-  if (!req.params.id) res.status(400).send("Should be id!");
   try {
     const result = await app.dbService.findOne(req.params.id, req.body?.fields);
     res.send(result);
