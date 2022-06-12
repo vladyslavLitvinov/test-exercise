@@ -7,8 +7,13 @@ app.use(express.json());
 app.get("/adverticements", async (req, res) => {
   const page = req.body?.page || 0;
   const sort = req.body?.sort;
+  const key = `${page}${sort}`;
   try {
-    const result = await app.dbService.find(page, sort);
+    let result = JSON.parse(await app.redis.get(key));
+    if (!result) {
+      result = await app.dbService.find(page, sort);
+      app.redis.set(key, JSON.stringify(result));
+    }
     res.send(result);
   }
   catch (e) {
@@ -17,8 +22,13 @@ app.get("/adverticements", async (req, res) => {
 });
 
 app.get("/adverticements/:id", async (req, res) => {
+  const key = `${req.params.id}${req.body.fields}`;
   try {
-    const result = await app.dbService.findOne(req.params.id, req.body?.fields);
+    let result = JSON.parse(await app.redis.get(key));
+    if (!result) {
+      result = await app.dbService.findOne(req.params.id, req.body.fields);
+      app.redis.set(key, JSON.stringify(result));
+    }
     res.send(result);
   }
   catch (e) {

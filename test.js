@@ -2,10 +2,18 @@ const { ObjectId } = require("mongodb");
 const request = require("supertest");
 const app = require("./app.controller");
 const dbService = require("./db.service.js");
+require("dotenv").config({ path: "./config/.env" });
+const redis = require('redis');
+const client = redis.createClient({
+  url: process.env.REDIS_URI,
+});
 
 beforeAll(async () => {
   await dbService.connect();
   app.dbService = dbService;
+
+  await client.connect();
+  app.redis = client;
 });
 
 afterAll(async () => {
