@@ -18,6 +18,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await dbService.close();
+  await client.quit();
 });
 
 describe("Find many adverticements", () => {
