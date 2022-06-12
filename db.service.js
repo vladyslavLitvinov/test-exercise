@@ -1,5 +1,6 @@
 const { MongoClient, ObjectId } = require("mongodb");
-const uri = "mongodb+srv://admin:admin@test.sslaq.mongodb.net/?retryWrites=true&w=majority";
+require("dotenv").config({ path: "./config/.env" });
+const uri = process.env.DB_SECRET;
 const client = new MongoClient(uri);
 
 class DbService {
