@@ -1,6 +1,9 @@
 # test-exercise
 A Json API for adverticements.
 
+# Before start
+Run: npm i
+
 # How to start
 Start server without docker: npm start
 
