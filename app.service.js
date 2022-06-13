@@ -3,13 +3,17 @@ module.exports = function validate(req, res, next) {
     res.status(422).send("Invalid name!");
     return;
   }
-  
+
   if (!req.body.description || req.body.description.length > 1000) {
     res.status(422).send("Invalid description!");
     return;
   }
 
-  if (!req.body.photos || req.body.photos.length === 0 || req.body.photos.length > 3) {
+  if (
+    !req.body.photos ||
+    req.body.photos.length === 0 ||
+    req.body.photos.length > 3
+  ) {
     res.status(422).send("Invalid photos!");
     return;
   }

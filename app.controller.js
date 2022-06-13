@@ -10,8 +10,7 @@ app.get("/adverticements", async (req, res) => {
   try {
     result = await app.dbService.find(page, sort);
     res.send(result);
-  }
-  catch (e) {
+  } catch (e) {
     res.status(500).send(`Error with finding! ${e.message}`);
   }
 });
@@ -25,8 +24,7 @@ app.get("/adverticements/:id", async (req, res) => {
       app.redis.set(key, JSON.stringify(result));
     }
     res.send(result);
-  }
-  catch (e) {
+  } catch (e) {
     res.status(404).send(`Adverticement not found! ${e.message}`);
   }
 });
@@ -35,8 +33,7 @@ app.post("/adverticements", validate, async (req, res) => {
   try {
     const id = await app.dbService.createAdvertisement(req.adverticement);
     res.status(201).send(id);
-  }
-  catch (e) {
+  } catch (e) {
     res.status(400).send(`Error with saving to database! ${e.message}`);
   }
 });

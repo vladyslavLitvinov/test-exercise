@@ -1,9 +1,8 @@
-const { ObjectId } = require("mongodb");
 const request = require("supertest");
 const app = require("./app.controller");
 const dbService = require("./db.service.js");
 require("dotenv").config({ path: "./config/.env" });
-const redis = require('redis');
+const redis = require("redis");
 const client = redis.createClient({
   url: process.env.REDIS_URI,
 });
@@ -24,9 +23,7 @@ afterAll(async () => {
 describe("Find many adverticements", () => {
   it("should return first 10 adverticements (without provide a page and sort)", async () => {
     const result = await dbService.find(0);
-    return request(app)
-      .get("/adverticements")
-      .expect(200, result);
+    return request(app).get("/adverticements").expect(200, result);
   });
 
   it("should return first 10 adverticements, page in range (without provide sort)", async () => {
@@ -36,11 +33,12 @@ describe("Find many adverticements", () => {
       .send({ page: 0 })
       .expect(200, result);
   });
-  
+
   it("should throw RangeError, page out of range", async () => {
     // Take max page + 1
-    const page = Math.floor(await dbService.adverticements.countDocuments() / 10) + 1;
-    
+    const page =
+      Math.floor((await dbService.adverticements.countDocuments()) / 10) + 1;
+
     return request(app)
       .get("/adverticements")
       .send({ page })
@@ -78,13 +76,11 @@ describe("Find one adverticement", () => {
 
   it("without fields", async () => {
     const result = await dbService.findOne(id);
-    return request(app)
-      .get(`/adverticements/${id}`)
-      .expect(200, result);
+    return request(app).get(`/adverticements/${id}`).expect(200, result);
   });
 
   it("with description field", async () => {
-    const fields = ["description"]
+    const fields = ["description"];
     const result = await dbService.findOne(id, fields);
     return request(app)
       .get(`/adverticements/${id}`)
@@ -93,16 +89,16 @@ describe("Find one adverticement", () => {
   });
 
   it("with photo field", async () => {
-    const fields = ["photos"]
+    const fields = ["photos"];
     const result = await dbService.findOne(id, fields);
     return request(app)
       .get(`/adverticements/${id}`)
       .send({ fields })
       .expect(200, result);
   });
-  
+
   it("with both fields", async () => {
-    const fields = ["description", "photos"]
+    const fields = ["description", "photos"];
     const result = await dbService.findOne(id, fields);
     return request(app)
       .get(`/adverticements/${id}`)
@@ -119,9 +115,7 @@ describe("Create an adverticement", () => {
   const price = date;
 
   it("should return Unprocessable Entity without providing name", () => {
-    return request(app)
-      .post("/adverticements")
-      .expect(422, "Invalid name!");
+    return request(app).post("/adverticements").expect(422, "Invalid name!");
   });
 
   it("should return Unprocessable Entity providing name > 200 symbols", () => {
@@ -174,6 +168,8 @@ describe("Create an adverticement", () => {
       .post("/adverticements")
       .send(adverticement);
     adverticement.mainPhoto = photos[0];
-    expect(await dbService.findOne(responce.body, ["description", "photos"])).toEqual(adverticement);
+    expect(
+      await dbService.findOne(responce.body, ["description", "photos"])
+    ).toEqual(adverticement);
   });
 });

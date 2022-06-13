@@ -14,7 +14,7 @@ class DbService {
     const result = await this.adverticements.insertOne(adverticement);
     return result.insertedId;
   }
-  
+
   async find(page, sort = {}) {
     const limit = 10;
     const countDocuments = await this.adverticements.countDocuments();
@@ -44,7 +44,7 @@ class DbService {
       adverticements: result,
     };
   }
-  
+
   async findOne(id, fields = []) {
     const options = {
       projection: {
@@ -52,17 +52,18 @@ class DbService {
         date: 0,
       },
     };
-  
-    const result = await this.adverticements.findOne({ _id: ObjectId(id) }, options);
 
-    if (!result) throw new Error(`Id ${id} not found!`)
-    
-    if (!fields.includes("description"))
-    delete result.description;
+    const result = await this.adverticements.findOne(
+      { _id: ObjectId(id) },
+      options
+    );
 
-    if (!fields.includes("photos"))
-    delete result.photos;
-    
+    if (!result) throw new Error(`Id ${id} not found!`);
+
+    if (!fields.includes("description")) delete result.description;
+
+    if (!fields.includes("photos")) delete result.photos;
+
     return result;
   }
 
